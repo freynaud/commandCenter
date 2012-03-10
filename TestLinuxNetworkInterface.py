@@ -49,13 +49,6 @@ lo        Link encap:Local Loopback  \n\
           
     ifconfig_a = ifconfig_eth0 + ifconfig_eth1 + ifconfig_lo
     
-    def __init__(self, hwaddr, ifconfig=ifconfig_a):
-        '''
-        Constructor. set the result of a 
-        ifconfig -a call for testing purposes.
-        '''
-        self.ifconfig_result = ifconfig
-        self._hwaddr = hwaddr
         
     def _execute_ifconfig(self, interface_name="-a"):
         if ("-a" == interface_name):
