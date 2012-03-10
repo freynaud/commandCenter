@@ -57,8 +57,6 @@ lo        Link encap:Local Loopback  \n\
         self.ifconfig_result = ifconfig
         self._hwaddr = hwaddr
         
-   
-    
     def _execute_ifconfig(self, interface_name="-a"):
         if ("-a" == interface_name):
             return self.ifconfig_a
