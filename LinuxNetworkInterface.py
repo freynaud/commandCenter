@@ -22,6 +22,15 @@ class LinuxNetworkInterface:
         output = subprocess.check_output(["ifconfig", interface_name])
         return output.decode("UTF-8")
     
+    def mark_up(self):
+        """
+        marks the interface up. Assumes the user doesn't have to
+        type a password for the command.
+        """
+        interface = self._get_interface()
+        output = subprocess.check_output(["ifconfig", interface , "up"])
+        return output.decode("UTF-8")
+    
    
     
     def _get_interface_name_for_line(self, interface_desc_first_line):
@@ -94,4 +103,5 @@ class LinuxNetworkInterface:
 if __name__ == '__main__':
     interface = LinuxNetworkInterface("00:0c:29:cd:ad:02")
     print(interface.get_ip_v4())
+    interface.mark_up()
     
