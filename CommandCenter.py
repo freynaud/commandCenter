@@ -4,82 +4,19 @@ Created on 10 Mar 2012
 @author: freynaud
 '''
 import http.server
-import socketserver
 import urllib.parse
 import json
 import subprocess
-from subprocess import CalledProcessError
-from pickle import FALSE
+import socketserver
+from SnapshortRevertedListener import SnapshotListener
+import LinuxNetworkInterface
+import time
+import sys
+import http.client, urllib.parse
+import json
 
 
 
-class NetworkInterface:
-    _interface = None
-    _mac_address = None
-    
-    def __init__(self, mac_addres):
-        self._mac_address = mac_addres
-        self._eth = self._get_interface()
-        
-    def exist(self) :
-        try:
-            subprocess.check_output(["ifconfig", self.eth])
-            return True
-        except OSError as err:
-            print(err)
-            return True 
-        except CalledProcessError as err:
-            print(err)
-            return False
-        
-        
-    def _get_interface(self):
-        res = self._get_hwaddr_linel()
-    
-    def is_up(self):
-        res = self._get_inet_addr_line()
-        return 'inet addr' in res
-    
-    def get_ip(self):
-        line = self._get_inet_addr_line()
-        prefix = "inet addr:"
-        start = line.index(prefix) + len(prefix)
-        end = line.find(" ",start)
-        res = line[start:end]
-        return res
-    
-    def mark_up(self):
-        try:
-            subprocess.check_output(["ifconfig", self.eth, "up"])
-            return True
-        except CalledProcessError as err:
-            print(err)
-            return False
-    
-    def _get_inet_addr_line(self):
-        if ( self.exist() == False):
-            print("error")
-        else:
-            ifconfig = ["ifconfig", self.eth ]
-            grab_ip = ["grep", "inet addr"]
-            p1 = subprocess.Popen(ifconfig, stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(grab_ip, stdin=p1.stdout, stdout=subprocess.PIPE)
-            p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
-            output = p2.communicate()[0]
-            res =  output.decode("UTF-8")
-            return res
-
-    def _get_hwaddr_linel(self):
-        ifconfig = ["ifconfig", "-a"]
-        grab_hwaddr= ["grep", "HWaddr"]
-        p1 = subprocess.Popen(ifconfig, stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(grab_hwaddr, stdin=p1.stdout, stdout=subprocess.PIPE)
-        p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
-        output = p2.communicate()[0]
-        res =  output.decode("UTF-8")
-        return res
-    
-    
     
     
 class MyHandler(http.server.BaseHTTPRequestHandler):
@@ -109,16 +46,62 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b)
         
-         
+        
+    def do_POST(self):
+        length = int(self.headers['Content-Length'])
+        post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+        print(post_data)
+        self.send_response(200, "success")
+        self.end_headers()
+        #self.wfile.write(b)
+     
+
+def no_op():
+    print("no op")
+
+
+
+
+
+def get_mac_address():
+    return sys.argv[1]
+
+
+def send_ok (ip):
+    data = json.dumps({"mac":get_mac_address() , "ip":ip})
+    print(data)
+    params = urllib.parse.urlencode({"content" : data })
+    print(params)
+    headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
+    conn = http.client.HTTPConnection("localhost:8081")
+    conn.request("POST", "/commandCenter", params, headers)
+    response = conn.getresponse()
+    print(response.status, response.reason)
+    data = response.read()
+    print(data)
+    conn.close()
+
+
+def wait_for_ip():
+    # expecting the mac address of the interface to use as the only parameter for that script.
+    interface = LinuxNetworkInterface.LinuxNetworkInterface(get_mac_address())
+    if (not interface.is_up()):
+        interface.mark_up()
+    
+    while True:
+        ip = interface.get_ip_v4()
+        if (ip):
+            send_ok(ip)            
+        else :
+            print("waiting")
+            time.sleep(1)
+
+      
 if __name__ == '__main__':
-    PORT = 8081
     
-    eth0 = NetworkInterface("00:0c:29:cd:ad:02")
-    print(eth0.exist())
-    print(eth0.is_up())
-    print(eth0.get_ip())
-    print(eth0.mark_up())
-    
+    listener = SnapshotListener(callback=wait_for_ip)
+    listener.start()
+    #PORT = 8081
     #Handler = MyHandler
     #httpd = socketserver.TCPServer(('', PORT), Handler)
     #httpd.serve_forever()

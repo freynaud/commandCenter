@@ -4,6 +4,9 @@ Created on 10 Mar 2012
 @author: freynaud
 '''
 import subprocess
+from subprocess import CalledProcessError
+import glob
+import os
 
 class LinuxNetworkInterface:
     '''
@@ -26,10 +29,23 @@ class LinuxNetworkInterface:
         """
         marks the interface up. Assumes the user doesn't have to
         type a password for the command.
+        // TODO freynaud dhclient ethX instead to renew the dhcp lease ?
+        sudo dhclient -r 
+        sudo rm /var/lib/dhcp3/*
+        sudo dhclient eth0
+        
         """
         interface = self._get_interface()
-        output = subprocess.check_output(["ifconfig", interface , "up"])
-        return output.decode("UTF-8")
+        try :
+            output = subprocess.check_output(["sudo", "/sbin/ifconfig",interface , "down"])
+            output = subprocess.check_output(["sudo", "/sbin/dhclient","-r" ])
+            files = glob.glob("/var/lib/dhcp/*")
+            for file in files :
+                output = subprocess.check_output(["sudo", "rm",file ])
+            output = subprocess.check_output(["sudo", "/sbin/dhclient",interface ])
+        except CalledProcessError as ex:
+            return output.decode("UTF-8")
+        
     
    
     
@@ -100,8 +116,4 @@ class LinuxNetworkInterface:
                 return ip
         return None
 
-if __name__ == '__main__':
-    interface = LinuxNetworkInterface("00:0c:29:cd:ad:02")
-    print(interface.get_ip_v4())
-    interface.mark_up()
-    
+

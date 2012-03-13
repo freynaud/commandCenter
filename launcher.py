@@ -1,21 +1,9 @@
-import socket
+import socketserver
+import CommandCenter
 
-
-HOST, PORT = "localhost", 9999
-data = "Hello World"
-
-# Create a socket (SOCK_STREAM means a TCP socket)
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    # Connect to server and send data
-    sock.connect((HOST, PORT))
-    sock.sendall(bytes(data + "\n","UTF-8"))
-
-    # Receive data from the server and shut down
-    received = sock.recv(1024)
-finally:
-    sock.close()
-
-print("Sent:     {}".format(data))
-print("Received: {}".format(str(received,"UTF-8")))
+if __name__ == '__main__':
+    
+  PORT = 8081
+  Handler = CommandCenter.MyHandler
+  httpd = socketserver.TCPServer(('', PORT), Handler)
+  httpd.serve_forever()
