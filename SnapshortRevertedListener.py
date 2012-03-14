@@ -55,11 +55,3 @@ class SnapshotListener(threading.Thread):
         print(time.strftime("%X",time.gmtime(now)))
         return seconds
 
-    
-if __name__ == "__main__":
-    
-    listener = SnapshotListener()
-    listener.start()
-    
-    
-       

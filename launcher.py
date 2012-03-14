@@ -37,7 +37,7 @@ def update_itself():
 def send_ready_signal():
     print("about to send rdy signal")
     try:
-        b = subprocess.check_output(["python3.2","sendReadySignal.py",_get_mac_address()])
+        b = subprocess.check_output(["python3.1","sendReadySignal.py",_get_mac_address()])
     except CalledProcessError as ex:
         print(ex.output)
     print("signal sent")
@@ -45,20 +45,19 @@ def send_ready_signal():
 def start_command_center():
     print("start_command_center")
     try:
-        b = subprocess.check_output(["python3.2","startCommandCenterServer.py"])
+        b = subprocess.check_output(["python3.1","startCommandCenterServer.py"])
     except CalledProcessError as ex:
         print(ex.output)
 
 
 
-def launcher():
+def launch():
     refresh_network()
     update_itself()
     send_ready_signal()
     start_command_center()
-    
-    
+
 
 if __name__ == '__main__':
-    listener = SnapshotListener(callback=launcher)
+    listener = SnapshotListener(callback=launch)
     listener.start()
