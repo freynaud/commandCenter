@@ -4,13 +4,11 @@ from subprocess import CalledProcessError
 import glob
 import subprocess
 import sys
+import LinuxNetworkInterface
 
-
-def _get_interface():
-    return sys.argv[1]
 
 def _get_mac_address():
-    return sys.argv[2]
+    return sys.argv[1]
 
 
 def refresh_network():
@@ -20,7 +18,8 @@ def refresh_network():
         files = glob.glob("/var/lib/dhcp3/*")
         for file in files :
             output = subprocess.check_output(["sudo", "rm",file ])
-        output = subprocess.check_output(["sudo", "/sbin/dhclient",_get_interface() ])
+        interface = LinuxNetworkInterface.LinuxNetworkInterface(_get_mac_address())
+        output = subprocess.check_output(["sudo", "/sbin/dhclient",interface._get_interface() ])
     except CalledProcessError as ex:
         return output.decode("UTF-8")
     print("network refreshed")
