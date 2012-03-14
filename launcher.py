@@ -28,7 +28,7 @@ def refresh_network():
 def update_itself():
     print("updating itself.")
     try:
-        b = subprocess.check_output({"git","pull","origin","master"})
+        b = subprocess.check_output(["git","pull","origin","master"])
         print(b)
     except OSError as err:
         print(err)
