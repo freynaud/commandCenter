@@ -68,13 +68,10 @@ def get_mac_address():
 
 
 def send_ok (ip):
-    data = json.dumps({"mac":get_mac_address() , "ip":ip})
-    print(data)
-    params = urllib.parse.urlencode({"content" : data })
-    print(params)
+    body = json.dumps({"cmd":"NodeWokeUpEvent", "content" :{"mac":get_mac_address() , "ip":ip}})
     headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
-    conn = http.client.HTTPConnection("localhost:8081")
-    conn.request("POST", "/commandCenter", params, headers)
+    conn = http.client.HTTPConnection("localhost:4444")
+    conn.request("POST", "/grid/admin/NodeCommandCenterServlet/", body, headers)
     response = conn.getresponse()
     print(response.status, response.reason)
     data = response.read()
@@ -88,7 +85,7 @@ def wait_for_ip():
     if (not interface.is_up()):
         interface.mark_up()
     
-    while True:
+    while not interface.get_ip_v4():
         ip = interface.get_ip_v4()
         if (ip):
             send_ok(ip)            
@@ -99,9 +96,11 @@ def wait_for_ip():
       
 if __name__ == '__main__':
     
+    #send_ok("the ip")
     listener = SnapshotListener(callback=wait_for_ip)
     listener.start()
-    #PORT = 8081
-    #Handler = MyHandler
-    #httpd = socketserver.TCPServer(('', PORT), Handler)
-    #httpd.serve_forever()
+    
+    PORT = 5556
+    Handler = MyHandler
+    httpd = socketserver.TCPServer(('', PORT), Handler)
+    httpd.serve_forever()
