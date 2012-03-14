@@ -8,15 +8,6 @@ import urllib.parse
 import json
 import subprocess
 import socketserver
-from SnapshortRevertedListener import SnapshotListener
-import LinuxNetworkInterface
-import time
-import sys
-import http.client, urllib.parse
-import json
-
-
-
     
     
 class MyHandler(http.server.BaseHTTPRequestHandler):
@@ -56,51 +47,9 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         #self.wfile.write(b)
      
 
-def no_op():
-    print("no op")
 
-
-
-
-
-def get_mac_address():
-    return sys.argv[1]
-
-
-def send_ok (ip):
-    body = json.dumps({"cmd":"NodeWokeUpEvent", "content" :{"mac":get_mac_address() , "ip":ip}})
-    headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
-    conn = http.client.HTTPConnection("192.168.216.133:4444")
-    conn.request("POST", "/grid/admin/NodeCommandCenterServlet/", body, headers)
-    response = conn.getresponse()
-    print(response.status, response.reason)
-    data = response.read()
-    print(data)
-    conn.close()
-
-
-def wait_for_ip():
-    # expecting the mac address of the interface to use as the only parameter for that script.
-    interface = LinuxNetworkInterface.LinuxNetworkInterface(get_mac_address())
-    if (not interface.is_up()):
-        interface.mark_up()
-    
-    while not interface.get_ip_v4():
-        ip = interface.get_ip_v4()
-        if (ip):
-            send_ok(ip)            
-        else :
-            print("waiting")
-            time.sleep(1)
-
-      
 if __name__ == '__main__':
-    
-    #send_ok("the ip")
-    listener = SnapshotListener(callback=wait_for_ip)
-    listener.start()
-    
-    PORT = 5556
+    PORT = 5558
     Handler = MyHandler
     httpd = socketserver.TCPServer(('', PORT), Handler)
     httpd.serve_forever()
