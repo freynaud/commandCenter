@@ -39,7 +39,7 @@ class LinuxNetworkInterface:
         try :
             output = subprocess.check_output(["sudo", "/sbin/ifconfig",interface , "down"])
             output = subprocess.check_output(["sudo", "/sbin/dhclient","-r" ])
-            files = glob.glob("/var/lib/dhcp/*")
+            files = glob.glob("/var/lib/dhcp3/*")
             for file in files :
                 output = subprocess.check_output(["sudo", "rm",file ])
             output = subprocess.check_output(["sudo", "/sbin/dhclient",interface ])
