@@ -3,11 +3,12 @@ Created on 10 Mar 2012
 
 @author: freynaud
 '''
+from subprocess import CalledProcessError
 import http.server
-import urllib.parse
 import json
-import subprocess
 import socketserver
+import subprocess
+import urllib.parse
     
     
 class MyHandler(http.server.BaseHTTPRequestHandler):
@@ -40,11 +41,32 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         
     def do_POST(self):
         length = int(self.headers['Content-Length'])
-        post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-        print(post_data)
+        post_data = self.rfile.read(length)
+        
+        if (post_data):
+            json_content = post_data.decode("UTF-8")
+            j = json.loads(json_content)
+            print(json.dumps(j, sort_keys=True, indent=4))
+            command = j['cmd']
+            if (not command):
+                res = {"success":True,"content":"valid command contain a cmd key \"cmd\"."}
+            else :
+                try:
+                    b = subprocess.check_output(command,stderr=subprocess.STDOUT)
+                    res = {"success":True,"content":b.decode("UTF-8")}
+                except OSError as err:
+                    res = {"success": False,"content":err.strerror}
+                except CalledProcessError as err :
+                    o = err.output
+                    res = {"success": False, "returncode":err.returncode, "content":o.decode("UTF-8")}
+        else:
+            res = {"success": False,"content":"post has no content."}
+        
         self.send_response(200, "success")
         self.end_headers()
-        #self.wfile.write(b)
+        content = json.dumps(res)
+        b = bytes(content, "UTF-8")
+        self.wfile.write(b)
      
 
 
