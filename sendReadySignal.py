@@ -18,7 +18,7 @@ def send_ready_signal():
     interface = LinuxNetworkInterface.LinuxNetworkInterface(mac)
     body = json.dumps({"cmd":"NodeWokeUpEvent", "content" :{"mac":mac , "ip":interface.get_ip_v4()}})
     headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
-    conn = http.client.HTTPConnection("192.168.216.133:4444",timeout=10)
+    conn = http.client.HTTPConnection("10.250.57.219:4444",timeout=10)
     conn.request("POST", "/grid/admin/NodeCommandCenterServlet/", body, headers)
     response = conn.getresponse()
     print(response.status, response.reason)
