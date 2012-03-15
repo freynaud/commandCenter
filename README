@@ -1,9 +1,16 @@
-command center for a node.
+command center for a node launcher.
 
-wait for a node to revert, and :
-reset the network -> "hardcoded"
-update itself from  git://github.scm.corp.ebay.com/euqe-team/commandCenter.git -> "hardcoded"
-let the hub know it's ready to receive command -> depends on what was pulled 
 
-Command are then executed by a python server. See startCommandCenterServer.py
+1)wait for a node to revert, and :
+2)reset the network -> "hardcoded"
+3)update itself from  git://github.scm.corp.ebay.com/euqe-team/commandCenter.git -> "hardcoded"
+4)let the hub know it's ready to receive command -> depends on what was pulled 
 
+5)Command are then executed by a python server. See startCommandCenterServer.py
+
+requirements : python3.1
+usage : 
+python3.1 launcher.py 00:0c:29:86:ea:06
+
+launch that before taking the "ok" snapshot of the node.
+Reverting will trigger 1..5
