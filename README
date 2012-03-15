@@ -1,0 +1,9 @@
+command center for a node.
+
+wait for a node to revert, and :
+reset the network -> "hardcoded"
+update itself from  git://github.scm.corp.ebay.com/euqe-team/commandCenter.git -> "hardcoded"
+let the hub know it's ready to receive command -> depends on what was pulled 
+
+Command are then executed by a python server. See startCommandCenterServer.py
+
