@@ -26,13 +26,16 @@ def refresh_network():
 
 def update_itself():
     print("updating itself.")
-    try:
-        b = subprocess.check_output(["git","pull","origin","master"])
-        print(b)
-    except OSError as err:
-        print(err)
-        b = bytes(err.strerror, "UTF-8");
-    print("updated ")
+    ok = False
+    while  not ok :
+        try:
+            b = subprocess.check_output(["git","pull","origin","master"])
+            ok = True
+            print(b.decode("UTF-8"))
+        except Exception as err:
+            print(err)
+    
+
 
 def send_ready_signal():
     print("about to send rdy signal")
