@@ -79,5 +79,8 @@ if __name__ == '__main__':
     print("starting command center on port 5558")
     PORT = 5558
     Handler = MyHandler
-    httpd = socketserver.TCPServer(('', PORT), Handler)
-    httpd.serve_forever()
+    try :
+        httpd = socketserver.TCPServer(('', PORT), Handler)
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.socket.close()
