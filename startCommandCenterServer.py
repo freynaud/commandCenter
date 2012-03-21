@@ -40,6 +40,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         
         
     def do_POST(self):
+        print("START POST CALL")
         length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(length)
         
@@ -49,7 +50,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             print(json.dumps(j, sort_keys=True, indent=4))
             command = j['cmd']
             if (not command):
-                res = {"success":True,"content":"valid command contain a cmd key \"cmd\"."}
+                res = {"success":False,"content":"valid command contain a cmd key \"cmd\"."}
             else :
                 try:
                     print("will execute : ")
@@ -70,6 +71,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         content = json.dumps(res)
         b = bytes(content, "UTF-8")
         self.wfile.write(b)
+        print("END POST CALL")
      
 
 
