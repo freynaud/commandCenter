@@ -53,6 +53,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             else :
                 try:
                     b = subprocess.check_output(command,stderr=subprocess.STDOUT)
+                    print(b)
                     res = {"success":True,"content":b.decode("UTF-8")}
                 except OSError as err:
                     res = {"success": False,"content":err.strerror}
