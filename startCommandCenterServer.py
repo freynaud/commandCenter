@@ -52,6 +52,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 res = {"success":True,"content":"valid command contain a cmd key \"cmd\"."}
             else :
                 try:
+                    print("will execute : ")
+                    print(command)
                     b = subprocess.check_output(command,stderr=subprocess.STDOUT)
                     print(b)
                     res = {"success":True,"content":b.decode("UTF-8")}
