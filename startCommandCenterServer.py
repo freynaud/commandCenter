@@ -76,6 +76,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
+    print("starting command center on port 5558")
     PORT = 5558
     Handler = MyHandler
     httpd = socketserver.TCPServer(('', PORT), Handler)
