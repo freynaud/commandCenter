@@ -55,7 +55,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 try:
                     print("will execute : ")
                     print(command)
-                    b = subprocess.check_output(command) #,stderr=subprocess.STDOUT)
+                    b = subprocess.check_output(command,stderr=subprocess.STDOUT)
                     print(b)
                     res = {"success":True,"content":b.decode("UTF-8")}
                 except OSError as err:
@@ -76,11 +76,12 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    print("starting command center on port 5558")
+    print("Starting command center on port 5558")
     PORT = 5558
     Handler = MyHandler
     try :
         httpd = socketserver.TCPServer(('', PORT), Handler)
         httpd.serve_forever()
     except KeyboardInterrupt:
+        print("stopping")
         httpd.socket.close()
