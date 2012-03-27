@@ -5,6 +5,7 @@ import glob
 import subprocess
 import sys
 import LinuxNetworkInterface
+import time
 
 
 def _get_mac_address():
@@ -34,6 +35,7 @@ def update_itself():
             print(b.decode("UTF-8"))
         except Exception as err:
             print(err)
+    time.sleep(5)
     
 
 
