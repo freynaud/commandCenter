@@ -11,7 +11,7 @@ import subprocess
 import urllib.parse
     
 
-version = "1234"
+version = "1235"
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
