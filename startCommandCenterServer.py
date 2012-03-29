@@ -10,7 +10,9 @@ import socketserver
 import subprocess
 import urllib.parse
     
-    
+
+version = "1234"
+
 class MyHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         print(self)
@@ -19,7 +21,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         query = res[4];
         params = urllib.parse.parse_qs(query)
         j = params['json']
-        b = bytes("<html><body>default</body></html>\n", "UTF-8"); 
+        b1 = bytes("<html><body>" +version + "</body></html>\n", "UTF-8"); 
         if (j):
             param = j[0]
             print(param)
@@ -36,7 +38,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         
         self.send_response(200, "success")
         self.end_headers()
-        self.wfile.write(b)
+        self.wfile.write(b1)
         
         
     def do_POST(self):
