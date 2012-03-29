@@ -16,7 +16,7 @@ version = "1235"
 
 
 def log(msg):
-    f = open('/home/freynaud/log.txt', 'a')
+    f = open('/home/euqe/commandCenterLogs.txt', 'a')
     f.write(msg)
     f.close()    
     

@@ -5,7 +5,6 @@ import glob
 import subprocess
 import sys
 import LinuxNetworkInterface
-import time
 
 
 def _get_mac_address():
@@ -58,13 +57,12 @@ def start_command_center():
 def launch():
     refresh_network()
     update_itself()
-    #send_ready_signal()
+    send_ready_signal()
     start_command_center()
 
 
 
 if __name__ == '__main__':
-    #listener = SnapshotListener(callback=launch)
-    #listener.start()
-    launch()
+    listener = SnapshotListener(callback=launch)
+    listener.start()
     
