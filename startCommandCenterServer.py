@@ -13,6 +13,14 @@ import urllib.parse
 
 version = "1235"
 
+
+
+def log(msg):
+    f = open('/home/freynaud/log.txt', 'a')
+    f.write(msg)
+    f.close()    
+    
+    
 class MyHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         print(self)
@@ -21,7 +29,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         query = res[4];
         params = urllib.parse.parse_qs(query)
         j = params['json']
-        b1 = bytes("<html><body>" +version + "</body></html>\n", "UTF-8"); 
+        b = bytes("<html><body>" +version + "</body></html>\n", "UTF-8"); 
         if (j):
             param = j[0]
             print(param)
@@ -38,7 +46,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         
         self.send_response(200, "success")
         self.end_headers()
-        self.wfile.write(b1)
+        self.wfile.write(b)
         
         
     def do_POST(self):
@@ -55,10 +63,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 res = {"success":False,"content":"valid command contain a cmd key \"cmd\"."}
             else :
                 try:
-                    print("will execute : ")
-                    print(command)
                     b = subprocess.check_output(command,stderr=subprocess.STDOUT)
-                    print(b)
+                    log(b.decode("utf-8")+"\n")
                     res = {"success":True,"content":b.decode("UTF-8")}
                 except OSError as err:
                     res = {"success": False,"content":err.strerror}
