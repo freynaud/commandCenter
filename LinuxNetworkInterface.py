@@ -14,8 +14,8 @@ class LinuxNetworkInterface:
     wrapper around ifconfig.
     '''
 
-    _hwaddr = None
-    _interface = None
+    hwaddr = None
+    interface = None
 
     def __init__(self, hwaddr=None,interface=None):
         '''
@@ -25,13 +25,13 @@ class LinuxNetworkInterface:
             raise BaseException()
         
         if (not hwaddr==None ):
-            self._hwaddr = hwaddr
-            self._interface = self._get_interface()
+            self.hwaddr = hwaddr
+            self.interface = self._get_interface()
         else:
-            self._interface = interface
+            self.interface = interface
             ifconfig = self._execute_ifconfig(interface)
             first_line = self._get_interface_first_linel(ifconfig)[0]
-            self._hwaddr = self._get_hwaddr_name_for_line(first_line)
+            self.hwaddr = self._get_hwaddr_name_for_line(first_line)
         
     
     def _execute_ifconfig(self , interface_name ="-a"):
@@ -111,7 +111,7 @@ class LinuxNetworkInterface:
         ifconfig = self._execute_ifconfig()
         first_lines = self._get_interface_first_linel(ifconfig)
         for line in first_lines:
-            if ( self._hwaddr in line ):
+            if ( self.hwaddr in line ):
                 return self._get_interface_name_for_line(line)
         return None
     
@@ -119,7 +119,7 @@ class LinuxNetworkInterface:
         ifconfig = self._execute_ifconfig()
         first_lines = self._get_interface_first_linel(ifconfig)
         for line in first_lines:
-            if ( self._hwaddr in line ):
+            if ( self.hwaddr in line ):
                 return True
         return False
     
