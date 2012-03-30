@@ -11,10 +11,12 @@ def _get_networkInterface():
     try :    
         mac_address =  sys.argv[1]
         print("param passed. Initializing with mac address : "+mac_address)
-        return LinuxNetworkInterface.LinuxNetworkInterface(hwaddr=mac_address)
+        res = LinuxNetworkInterface.LinuxNetworkInterface(hwaddr=mac_address)
     except BaseException :
         print("no param. Assuming eth0")
-        return LinuxNetworkInterface.LinuxNetworkInterface(interface="eth0")
+        res =LinuxNetworkInterface.LinuxNetworkInterface(interface="eth0")
+    
+    return res;
 
 
 def refresh_network():
@@ -46,7 +48,7 @@ def update_itself():
 def send_ready_signal():
     print("about to send rdy signal")
     try:
-        b = subprocess.check_output(["python3.2","sendReadySignal.py",_get_networkInterface()._hwaddr])
+        b = subprocess.check_output(["python3.2","sendReadySignal.py",_get_networkInterface().hwaddr])
     except CalledProcessError as ex:
         print(ex.output)
     print("signal sent")
@@ -69,6 +71,6 @@ def launch():
 
 
 if __name__ == '__main__':
-    listener = SnapshotListener(callback=launch)
-    listener.start()
-    
+    #listener = SnapshotListener(callback=launch)
+    #listener.start()
+    launch()
