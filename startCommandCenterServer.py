@@ -143,6 +143,6 @@ if __name__ == '__main__':
     try :
         httpd = socketserver.TCPServer(('', PORT), Handler)
         httpd.serve_forever()
-    except BaseException:
+    except KeyboardInterrupt:
         print("stopping")
         httpd.socket.close()
