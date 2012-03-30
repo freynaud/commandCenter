@@ -71,6 +71,5 @@ def launch():
 
 
 if __name__ == '__main__':
-    #listener = SnapshotListener(callback=launch)
-    #listener.start()
-    launch()
+    listener = SnapshotListener(callback=launch)
+    listener.start()
