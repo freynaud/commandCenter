@@ -7,6 +7,7 @@ import subprocess
 from subprocess import CalledProcessError
 import glob
 import os
+import re
 
 class LinuxNetworkInterface:
     '''
@@ -14,12 +15,24 @@ class LinuxNetworkInterface:
     '''
 
     _hwaddr = None
+    _interface = None
 
-    def __init__(self, hwaddr):
+    def __init__(self, hwaddr=None,interface=None):
         '''
         Constructor
         '''
-        self._hwaddr = hwaddr
+        if (hwaddr == None and interface==None):
+            raise BaseException()
+        
+        if (not hwaddr==None ):
+            self._hwaddr = hwaddr
+            self._interface = self._get_interface()
+        else:
+            self._interface = interface
+            ifconfig = self._execute_ifconfig(interface)
+            first_line = self._get_interface_first_linel(ifconfig)[0]
+            self._hwaddr = self._get_hwaddr_name_for_line(first_line)
+        
     
     def _execute_ifconfig(self , interface_name ="-a"):
         output = subprocess.check_output(["ifconfig", interface_name])
@@ -57,6 +70,16 @@ class LinuxNetworkInterface:
         start = 0
         end = interface_desc_first_line.find("      Link encap")
         res = interface_desc_first_line[start:end]
+        return res
+
+    def _get_hwaddr_name_for_line(self, interface_desc_first_line):
+        """
+        extract the interface name ( eth0 , lo ) from the interface description 
+        """
+        marker = "  HWaddr "
+        start = interface_desc_first_line.find(marker) + len(marker)
+        res = interface_desc_first_line[start:len(interface_desc_first_line)]
+        res = re.sub(r'\s', '', res)
         return res
     
     def _get_interface_first_linel(self, ifconfig_a_result):

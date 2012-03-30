@@ -68,7 +68,7 @@ class Test(unittest.TestCase):
     
            
     def test_extract_interface(self):
-        interface = LinuxNetworkInterface.LinuxNetworkInterface(None)
+        interface = LinuxNetworkInterface.LinuxNetworkInterface(hwaddr=Mock.eth0_hwaddr)
         self.assertEqual(interface._get_interface_name_for_line(Mock.eth0_first_line), "eth0")
         self.assertEqual(interface._get_interface_name_for_line(Mock.eth1_first_line), "eth1")
         
@@ -109,7 +109,14 @@ class Test(unittest.TestCase):
         
         interface = Mock(Mock.eth1_hwaddr)
         self.assertEqual(interface.get_ip_v4(),None)
-         
+    
+    def test_create_with_interface_name(self):
+        interface = Mock(interface="eth0")
+        self.assertEqual(interface.get_ip_v4(),Mock.eth0_ip)
+        
+        interface = Mock(interface="eth1")
+        self.assertEqual(interface.get_ip_v4(),None)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
