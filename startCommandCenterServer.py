@@ -22,6 +22,7 @@ class JsonRequest:
     command = None
     
     def __init__(self, raw_request):
+        print(raw_request)
         self._raw = raw_request
         self._json = json.loads(raw_request)
         self._async = (self._json['async'] == True)
