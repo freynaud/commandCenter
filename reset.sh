@@ -1,4 +1,4 @@
 #!/bin/bash
-ifconfig eth0 down
-dhclient -r 
-rm /var/lib/dhcp/*
+sudo ifconfig eth0 down
+sudo dhclient -r 
+sudo rm -f /var/lib/dhcp/*
